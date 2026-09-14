@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>じゃんけんゲーム</title>
+<style>
+  /* ===== ここを変えると見た目がかわる ===== */
+  :root {
+    --bg: #F3F0FF;        /* 背景の色 */
+    --main: #8B7BD8;      /* ボタンの色 */
+    --text: #3A2F40;      /* 文字の色 */
+  }
+  /* ====================================== */
+  body { margin: 0; font-family: "Hiragino Sans", "BIZ UDPGothic", sans-serif; background: var(--bg); color: var(--text); text-align: center; padding: 40px 16px; }
+  h1 { font-size: 1.6rem; margin: 0 0 8px; }
+  .hands { display: flex; justify-content: center; gap: 12px; margin: 20px 0; }
+  .hands button { font-size: 2.4rem; width: 84px; height: 84px; border: none; border-radius: 22px; background: #fff; cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+  .hands button:active { transform: scale(0.92); }
+  .stage { font-size: 3rem; margin: 10px 0; }
+  #result { font-size: 1.3rem; font-weight: bold; min-height: 2em; color: var(--main); }
+  .score { margin-top: 16px; color: #777; }
+</style>
+</head>
+<body>
+
+<!-- ===== ここを変えるとゲームの内容がかわる ===== -->
+<h1>✊ ねこ先生とじゃんけん</h1>
+<p>3回勝ったらあなたの勝ち!</p>
+<!-- ============================================ -->
+
+<div class="stage"><span id="you">❔</span> vs <span id="cpu">🐱</span></div>
+<div id="result">すきな手をえらんでね</div>
+<div class="hands">
+  <button onclick="play(0)">✊</button>
+  <button onclick="play(1)">✌️</button>
+  <button onclick="play(2)">🖐️</button>
+</div>
+<div class="score">あなた <span id="win">0</span> 勝 / 相手 <span id="lose">0</span> 勝</div>
+
+<script>
+  // ===== ここを変えると相手やメッセージがかわる =====
+  var HANDS = ["✊", "✌️", "🖐️"];
+  var CPU_FACE = "🐱";               // 相手のキャラ
+  var GOAL = 3;                      // 先に何勝したら終わり?
+  var MSG_WIN = "🎉 勝ち!";
+  var MSG_LOSE = "😿 負け…";
+  var MSG_DRAW = "🤝 あいこ";
+  // ==============================================
+
+  var win = 0, lose = 0;
+
+  function play(me) {
+    var cpu = Math.floor(Math.random() * 3);
+    document.getElementById("you").textContent = HANDS[me];
+    document.getElementById("cpu").textContent = HANDS[cpu];
+    var r = document.getElementById("result");
+    if (me === cpu) { r.textContent = MSG_DRAW; }
+    else if ((me + 1) % 3 === cpu) { win++; r.textContent = MSG_WIN; }   // グー→チョキ、チョキ→パー、パー→グーに勝つ
+    else { lose++; r.textContent = MSG_LOSE; }
+    document.getElementById("win").textContent = win;
+    document.getElementById("lose").textContent = lose;
+
+    if (win >= GOAL) { r.textContent = "🏆 " + GOAL + "勝先取!あなたの勝ち!"; reset(); }
+    if (lose >= GOAL) { r.textContent = CPU_FACE + " の勝ち…もう1回?"; reset(); }
+  }
+
+  function reset() { win = 0; lose = 0; setTimeout(function () { document.getElementById("cpu").textContent = CPU_FACE; }, 1500); }
+</script>
+</body>
+</html>
